@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PWA Example</title>
+    <link href="bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h1>データ保存フォーム</h1>
+        <form id="dataForm">
+            <div class="form-floating mb-3">
+                <input type="date" class="form-control" id="floatingDate" value="" placeholder=""
+                    >
+                <label for="floatingDate">購入日</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="floatingInput" placeholder="">
+                <label for="floatingInput">購入店</label>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <div class="input-group mb-3">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="floatingInput" placeholder="">
+                            <label for="floatingInput">量</label>
+                        </div>
+                        <span class="input-group-text">kg</span>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="input-group mb-3">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="floatingInput" placeholder="">
+                            <label for="floatingInput">個数</label>
+                        </div>
+                        <span class="input-group-text">個</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="btn-group mb-3 w-100" role="group">
+                <button type="button" class="btn btn-outline-primary w-100" id="option1">税込</button>
+                <button type="button" class="btn btn-outline-primary w-100" id="option2">税抜8%</button>
+                <button type="button" class="btn btn-outline-primary w-100" id="option3">税抜10%</button>
+            </div>
+
+            <script>
+                const btnGroup = document.querySelector(".btn-group");
+                if (btnGroup) {
+                    btnGroup.querySelectorAll(".btn").forEach(button => {
+                        button.addEventListener("click", () => {
+                            btnGroup.querySelectorAll(".btn").forEach(btn => btn.classList.remove("active"));
+                            button.classList.add("active");
+                        });
+                    });
+                }
+            </script>
+
+            <br>
+
+            <button type="submit" class="btn btn-primary">保存</button>
+
+        </form>
+
+        <div id="message" class="mt-3"></div>
+
+    </div>
+
+    <script src="bootstrap/bootstrap.bundle.min.js"></script>
+    <script src="scripts/app.js"></script>
+
+</body>
+
+</html>

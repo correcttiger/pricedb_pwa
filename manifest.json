@@ -1,0 +1,13 @@
+{
+    "name": "Price DB (PWA)",
+    "short_name": "Price DB",
+    "display": "standalone",
+    "start_url": "index.html",
+    "icons": [
+        {
+            "src": "images/icon_128.png",
+            "sizes": "128x128",
+            "type": "image/png"
+        }
+    ]
+}
