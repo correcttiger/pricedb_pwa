@@ -8,3 +8,21 @@ if (btnGroup) {
         });
     });
 }
+
+window.onload = async function() {
+    const data = await DB.prices.toArray();
+    displayData(data);
+};
+
+function displayData(data) {
+    const dataList = document.getElementById("price-list");
+    dataList.innerHTML = "";
+    data.forEach(item => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td>${item.name}</td>
+            <td>${item.tax}</td>
+        `;
+        dataList.appendChild(row);
+    });
+}
