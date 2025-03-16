@@ -5,6 +5,7 @@ self.addEventListener("install", event => {
                 "/",
                 "/manifest.json",
                 "/scripts/app.js",
+                "/scripts/service_worker.js",
                 "/bootstrap/bootstrap.min.css",
                 "/bootstrap/bootstrap.bundle.min.js",
             ]);
