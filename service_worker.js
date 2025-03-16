@@ -4,8 +4,8 @@ self.addEventListener("install", event => {
             return cache.addAll([
                 "/",
                 "/manifest.json",
+                "/service_worker.js",
                 "/scripts/app.js",
-                "/scripts/service_worker.js",
                 "/bootstrap/bootstrap.min.css",
                 "/bootstrap/bootstrap.bundle.min.js",
             ]);
