@@ -1,10 +1,8 @@
 self.addEventListener("install", event => {
     event.waitUntil(
-        caches.open("my-cache").then(cache => {
-            console.log('install');
+        caches.open("pricedb-cache").then(cache => {
             return cache.addAll([
                 "/",
-                "/index.html",
                 "/manifest.json",
                 "/scripts/app.js",
                 "/bootstrap/bootstrap.min.css",
