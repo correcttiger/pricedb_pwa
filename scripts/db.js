@@ -1,6 +1,7 @@
 const DB = new Dexie("PriceDB");
 
 DB.version(1).stores({
+    items: "++id, name, category, tax",
     prices: "++id, name, date, shop, amount, count, price, tax, memo"
 });
 
