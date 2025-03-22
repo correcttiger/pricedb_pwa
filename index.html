@@ -27,19 +27,15 @@
 
 <body>
 
-    <!--AppBar（上部ナビバー） -->
     <nav class="navbar navbar-dark bg-primary fixed-top">
         <div class="container-fluid">
-            <!-- 左メニューボタン -->
             <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu">
                 ☰
             </button>
-            <!-- タイトル -->
             <span class="navbar-brand mx-auto">Price DB</span>
         </div>
     </nav>
 
-    <!--左から出るメニュー -->
     <div class="offcanvas offcanvas-start" id="offcanvasMenu">
         <div class="offcanvas-header">
             <h5 class="offcanvas-title">商品を選択</h5>
@@ -189,7 +185,7 @@
                                 <div class="col">
                                     <div class="input-group mb-3">
                                         <span class="input-group-text">量</span>
-                                        <input type="text" class="form-control fs-3 text-end" id="inputAmount"
+                                        <input type="number" class="form-control fs-3 text-end" id="inputAmount"
                                             placeholder="">
                                         <span class="input-group-text">g</span>
                                         <div class="invalid-feedback">1以上の数値を入力してください。</div>
@@ -206,7 +202,7 @@
                                 </div>
                             </div>
 
-                            <div class="row d-flex align-items-center">
+                            <!-- <div class="row d-flex align-items-center">
 
                                 <div class="col">
                                     <div class="input-group mb-3">
@@ -225,15 +221,21 @@
                                     </div>
                                 </div>
 
+                            </div> -->
+
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">価格</span>
+                                <input type="text" class="form-control fs-3 text-end" inputmode="numeric"
+                                    pattern="[0-9]*" id="inputPrice" placeholder="">
+                                <span class="input-group-text">円</span>
+                                <div class="invalid-feedback">1以上の数値を入力してください。</div>
                             </div>
 
-                            <!--
                             <div class="btn-group mb-3 w-100" role="group">
-                                <button type="button" class="btn btn-outline-primary w-100" id="btnTaxInc">税込</button>
+                                <button type="button" class="btn btn-outline-primary w-100 active" id="btnTaxInc">税込</button>
                                 <button type="button" class="btn btn-outline-primary w-100" id="btnTax8">税抜8%</button>
                                 <button type="button" class="btn btn-outline-primary w-100" id="btnTax10">税抜10%</button>
                             </div>
-                            -->
 
                             <div class="form-floating mb-3">
                                 <input type="text" class="form-control" id="inputMemo" placeholder="">
@@ -247,7 +249,7 @@
                 <div class="modal-footer">
                     <button class="btn btn-primary" id="btnNextForm" onclick="showPage(2);">次へ</button>
                     <button class="btn btn-secondary d-none" id="btnPrevForm" onclick="showPage(1);">戻る</button>
-                    <button class="btn btn-primary d-none" id="btnSave">完了</button>
+                    <button class="btn btn-primary d-none" id="btnSave" , onclick="saveData();">完了</button>
                 </div>
             </div>
         </div>
