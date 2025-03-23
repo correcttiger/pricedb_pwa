@@ -51,12 +51,7 @@ function showPage(page) {
             document.getElementById("btnPrevForm").classList.remove("d-none");
             document.getElementById("btnSave").classList.remove("d-none");
             document.getElementById("modalTitle").textContent = inputItem.value + "の価格を登録";
-
-            const today = new Date();
-            const yyyy = today.getFullYear();
-            const mm = String(today.getMonth() + 1).padStart(2, "0");
-            const dd = String(today.getDate()).padStart(2, "0");
-            document.getElementById("inputDate").value = `${yyyy}-${mm}-${dd}`;
+            document.getElementById("inputDate").value = todayString();
 
         }
     }
@@ -66,20 +61,35 @@ function showPage(page) {
 function saveData() {
 
     const inputItem = document.getElementById("inputItem");
-    const inputAmount = document.getElementById("inputAmount")
-    const inputCount = document.getElementById("inputCount")
+    const inputAmount = document.getElementById("inputAmount");
+    const inputCount = document.getElementById("inputCount");
+    const inputPrice = document.getElementById("inputPrice");
 
-    const item = document.getElementById("inputItem").value;
+    const item = inputItem.value;
     const category = document.getElementById("inputCategory").value;
-    const date = document.getElementById("inputDate").value;
+    const date = document.getElementById("inputDate").value || todayString();
     const shop = document.getElementById("inputShop").value;
-    const amount = document.getElementById("inputAmount").value;
-    const count = document.getElementById("inputCount").value;
-    const price = document.getElementById("inputPrice").value;
+    const amount = inputAmount.value;
+    const count = inputCount.value;
+    const price = inputPrice.value;
     const memo = document.getElementById("inputMemo").value;
 
-    console.log(date);
-    return;
+    if (isNaN(amount) || amount <= 0 || amount % 1 > 0) {
+        inputAmount.classList.add("is-invalid");
+        return;
+    }
+    if (isNaN(count) || count <= 0 || count % 1 > 0) {
+        inputCount.classList.add("is-invalid");
+        return;
+    }
+    if (isNaN(price) || price <= 0 || price % 1 > 0) {
+        inputPrice.classList.add("is-invalid");
+        return;
+    }
+
+    inputAmount.classList.remove("is-invalid");
+    inputCount.classList.remove("is-invalid");
+    inputPrice.classList.remove("is-invalid");
 
     let tax = 0;
     if (document.getElementById("btnTax8").classList.contains("active")) {
@@ -90,10 +100,53 @@ function saveData() {
     }
 
     DB.items.put({ item, category });
-    DB.prices.put({ item, date, shop, amount, count, price, tax, memo});
+    DB.prices.put({ item, date, shop, amount, count, price, tax, memo });
 
     const modal = bootstrap.Modal.getInstance(document.getElementById("modalRegister"));
     modal?.hide();
+
+    updateMenu();
+
+}
+
+
+async function updateMenu() {
+
+    const accCategory = document.getElementById("accCategory");
+    const categories = await DB.items.orderBy("category").uniqueKeys();
+    let html = "";
+
+    accCategory.innerHTML = "";
+
+    categories.forEach(async (category, index) => {
+        const items = await DB.items.where("category").equals(category).toArray();
+        
+        const accordionId = "accordion-" + index;
+        accCategory.innerHTML += `
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#${accordionId}">
+                        ${category}
+                    </button>
+                </h2>
+                <div id="${accordionId}" class="accordion-collapse collapse">
+                    <div class="accordion-body">
+                        ${items.map((item, j) => {
+                            const itemId = accordionId + "-" + j;
+                            return `<input type="radio" class="btn-check" name="category" id="${itemId}" autocomplete="off">
+                                    <label class="btn btn-outline-secondary w-100 mb-1" for="${itemId}">${item.item}</label>`;
+                        }).join("\n")}
+                    </div>
+                </div>
+            </div>
+        `;
+        
+    });
+
+}
+
+
+function showItemPage(item) {
 
 }
 
@@ -104,8 +157,13 @@ function displayData(data) {
     data.forEach(item => {
         const row = document.createElement("tr");
         row.innerHTML = `
-            <td>${item.name}</td>
-            <td>${item.tax}</td>
+            <td>${item.date}</td>
+            <td>${item.shop}</td>
+            <td>${item.amount}</td>
+            <td>${item.count}</td>
+            <td>${item.price}</td>
+            <td>${""}</td>
+            <td>${item.memo}</td>
         `;
         dataList.appendChild(row);
     });

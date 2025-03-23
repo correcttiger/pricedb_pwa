@@ -6,17 +6,10 @@ DB.version(1).stores({
 });
 
 
-function addData() { //name, date, shop, amount, count, price, tax, memo
-
-    const name = "砂糖";
-    const date = "25-03-16";
-    const shop = "原信";
-    const amount = 1000;
-    const count = 1;
-    const price = 198;
-    const tax = [0, 8, 10][Math.random() * 3 | 0];
-    const memo = "";
-
-    DB.prices.put({ name, date, shop, amount, count, price, tax, memo});
-
+function todayString() {
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, "0");
+    const dd = String(today.getDate()).padStart(2, "0");
+    return `${yyyy}-${mm}-${dd}`;
 }

@@ -29,78 +29,21 @@
 
     <nav class="navbar navbar-dark bg-primary fixed-top">
         <div class="container-fluid">
-            <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu">
+            <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu" onclick="updateMenu();">
                 ☰
             </button>
             <span class="navbar-brand mx-auto">Price DB</span>
         </div>
     </nav>
 
-    <div class="offcanvas offcanvas-start" id="offcanvasMenu">
+    <div class="offcanvas offcanvas-start" id="offcanvasMenu" style="width: 200px;">
         <div class="offcanvas-header">
             <h5 class="offcanvas-title">商品を選択</h5>
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
         </div>
         <div class="offcanvas-body">
-            <div class="accordion" id="categoryAccordion">
-
-                <!-- カテゴリ 1 -->
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#category1">
-                            カテゴリ 1
-                        </button>
-                    </h2>
-                    <div id="category1" class="accordion-collapse collapse show" data-bs-parent="#categoryAccordion">
-                        <div class="accordion-body">
-                            <input type="radio" class="btn-check" name="category" id="c1a" autocomplete="off" checked>
-                            <label class="btn btn-outline-secondary w-100 mb-1" for="c1a">カテゴリ 1-1</label>
-
-                            <input type="radio" class="btn-check" name="category" id="c1b" autocomplete="off">
-                            <label class="btn btn-outline-secondary w-100 mb-1" for="c1b">カテゴリ 1-2</label>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- カテゴリ 2 -->
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#category2">
-                            カテゴリ 2
-                        </button>
-                    </h2>
-                    <div id="category2" class="accordion-collapse collapse" data-bs-parent="#categoryAccordion">
-                        <div class="accordion-body">
-                            <input type="radio" class="btn-check" name="category" id="c2a" autocomplete="off">
-                            <label class="btn btn-outline-secondary w-100 mb-1" for="c2a">カテゴリ 2-1</label>
-
-                            <input type="radio" class="btn-check" name="category" id="c2b" autocomplete="off">
-                            <label class="btn btn-outline-secondary w-100 mb-1" for="c2b">カテゴリ 2-2</label>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- カテゴリ 3 -->
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#category3">
-                            カテゴリ 3
-                        </button>
-                    </h2>
-                    <div id="category3" class="accordion-collapse collapse" data-bs-parent="#categoryAccordion">
-                        <div class="accordion-body">
-                            <input type="radio" class="btn-check" name="category" id="c3a" autocomplete="off">
-                            <label class="btn btn-outline-secondary w-100 mb-1" for="c3a">カテゴリ 3-1</label>
-
-                            <input type="radio" class="btn-check" name="category" id="c3b" autocomplete="off">
-                            <label class="btn btn-outline-secondary w-100 mb-1" for="c3b">カテゴリ 3-2</label>
-                        </div>
-                    </div>
-                </div>
-
+            <div class="accordion" id="accCategory">
+                <!-- カテゴリがここに表示されます -->
             </div>
         </div>
     </div>
@@ -144,7 +87,7 @@
                         <form id="formItem">
                             <div class="input-group mb-3">
                                 <span class="input-group-text">商品名</span>
-                                <input type="text" class="form-control" id="inputItem" placeholder="">
+                                <input type="text" class="form-control" id="inputItem" placeholder="" required>
                                 <div class="invalid-feedback">商品名を入力してください。</div>
                             </div>
                             <div class="input-group mb-3">
@@ -188,16 +131,16 @@
                                         <input type="number" class="form-control fs-3 text-end" id="inputAmount"
                                             placeholder="">
                                         <span class="input-group-text">g</span>
-                                        <div class="invalid-feedback">1以上の数値を入力してください。</div>
+                                        <div class="invalid-feedback">1以上の整数で入力してください。</div>
                                     </div>
                                 </div>
                                 <div class="col">
                                     <div class="input-group mb-3">
                                         <span class="input-group-text">個数</span>
-                                        <input type="text" class="form-control fs-3 text-end" id="inputCount"
+                                        <input type="number" class="form-control fs-3 text-end" id="inputCount"
                                             placeholder="">
                                         <span class="input-group-text">個</span>
-                                        <div class="invalid-feedback">1以上の数値を入力してください。</div>
+                                        <div class="invalid-feedback">1以上の整数で入力してください。</div>
                                     </div>
                                 </div>
                             </div>
@@ -225,10 +168,9 @@
 
                             <div class="input-group mb-3">
                                 <span class="input-group-text">価格</span>
-                                <input type="text" class="form-control fs-3 text-end" inputmode="numeric"
-                                    pattern="[0-9]*" id="inputPrice" placeholder="">
+                                <input type="number" class="form-control fs-3 text-end" id="inputPrice" placeholder="" required>
                                 <span class="input-group-text">円</span>
-                                <div class="invalid-feedback">1以上の数値を入力してください。</div>
+                                <div class="invalid-feedback">1以上の整数で入力してください。</div>
                             </div>
 
                             <div class="btn-group mb-3 w-100" role="group">
