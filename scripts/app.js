@@ -114,13 +114,12 @@ async function updateMenu() {
 
     const accCategory = document.getElementById("accCategory");
     const categories = await DB.items.orderBy("category").uniqueKeys();
-    let html = "";
 
     accCategory.innerHTML = "";
 
     categories.forEach(async (category, index) => {
-        const items = await DB.items.where("category").equals(category).toArray();
-        
+        const items = await DB.items.where({ category }).toArray();
+
         const accordionId = "accordion-" + index;
         accCategory.innerHTML += `
             <div class="accordion-item">
@@ -140,31 +139,56 @@ async function updateMenu() {
                 </div>
             </div>
         `;
-        
+
     });
 
 }
 
 
-function showItemPage(item) {
+document.getElementById("accCategory").addEventListener("change", (event) => {
 
-}
+    const label = document.querySelector(`label[for="${event.target.id}"]`);
+
+    showItemPage(label.innerText);
+
+});
 
 
-function displayData(data) {
-    const dataList = document.getElementById("price-list");
-    dataList.innerHTML = "";
-    data.forEach(item => {
+async function showItemPage(item) {
+    const prices = await DB.prices.where({ item }).toArray();
+    const tbPrice = document.getElementById("tbPrice");
+    tbPrice.innerHTML = "";
+    prices.forEach(data => {
         const row = document.createElement("tr");
         row.innerHTML = `
-            <td>${item.date}</td>
-            <td>${item.shop}</td>
-            <td>${item.amount}</td>
-            <td>${item.count}</td>
-            <td>${item.price}</td>
-            <td>${""}</td>
-            <td>${item.memo}</td>
+            <td class="text-center">${data.date}</td>
+            <td class="text-center">${data.shop}</td>
+            <td class="text-end">${data.amount}</td>
+            <td class="text-end">${data.count}</td>
+            <td class="text-end">${data.price}</td>
+            <td class="text-end">${""}</td>
+            <td class="text-start">${data.memo}</td>
         `;
-        dataList.appendChild(row);
+        tbPrice.appendChild(row);
     });
+    document.getElementById("appbarTitle").innerText = item;
 }
+
+
+// function displayData(data) {
+//     const dataList = document.getElementById("price-list");
+//     dataList.innerHTML = "";
+//     data.forEach(item => {
+//         const row = document.createElement("tr");
+//         row.innerHTML = `
+//             <td>${item.date}</td>
+//             <td>${item.shop}</td>
+//             <td>${item.amount}</td>
+//             <td>${item.count}</td>
+//             <td>${item.price}</td>
+//             <td>${""}</td>
+//             <td>${item.memo}</td>
+//         `;
+//         dataList.appendChild(row);
+//     });
+// }

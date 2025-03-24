@@ -32,7 +32,7 @@
             <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu" onclick="updateMenu();">
                 ☰
             </button>
-            <span class="navbar-brand mx-auto">Price DB</span>
+            <span class="navbar-brand mx-auto" id="appbarTitle">Price DB</span>
         </div>
     </nav>
 
@@ -48,21 +48,21 @@
         </div>
     </div>
 
-    <div class="container mt-5 pt-4">
+    <div class="table-responsive mt-5 pt-4">
 
         <table class="table table-striped">
             <thead class="table-dark">
                 <tr st>
-                    <th scope="col">購入日</th>
-                    <th scope="col">購入店</th>
-                    <th scope="col">量</th>
-                    <th scope="col">個数</th>
-                    <th scope="col">価格</th>
-                    <th scope="col">指標</th>
-                    <th scope="col">備考</th>
+                    <th scope="col" class="text-center">購入日</th>
+                    <th scope="col" class="text-center">購入店</th>
+                    <th scope="col" class="text-center">量</th>
+                    <th scope="col" class="text-center">個数</th>
+                    <th scope="col" class="text-center">価格</th>
+                    <th scope="col" class="text-center">指標</th>
+                    <th scope="col" class="text-center">備考</th>
                 </tr>
             </thead>
-            <tbody id="price-list">
+            <tbody id="tbPrice">
                 <!-- データがここに表示されます -->
             </tbody>
         </table>
