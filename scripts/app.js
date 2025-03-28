@@ -14,13 +14,38 @@ window.onload = async function () {
     displayData(data);
 };
 
-function openModal(name = "") {
+async function openModal(name = "") {
+
     const modal = new bootstrap.Modal(document.getElementById("modalRegister"));
+
     document.getElementById("inputItem").value = name;
+
+    const categories = await DB.items.orderBy("category").uniqueKeys();
+    const datalistCategory = document.getElementById("datalistCategory");
+    datalistCategory.innerHTML = "";
+    for (const category of categories) {
+        console.log(category);
+        const option = document.createElement("option");
+        option.value = category;
+        datalistCategory.appendChild(option);
+    }
+
+    const shops = await DB.prices.orderBy("shop").uniqueKeys();
+    const datalistShop = document.getElementById("datalistShop");
+    datalistShop.innerHTML = "";
+    for (const shop of shops) {
+        console.log(shop);
+        const option = document.createElement("option");
+        option.value = shop;
+        datalistShop.appendChild(option);
+    }
+
     showPage(name ? 2 : 1);
     inputItem.classList.remove("is-invalid");
     modal.show();
+
 }
+
 
 document.getElementById("modalRegister").addEventListener("shown.bs.modal", () => {
     if (!document.getElementById("step1").classList.contains("d-none")) {
@@ -30,6 +55,7 @@ document.getElementById("modalRegister").addEventListener("shown.bs.modal", () =
         document.querySelector("#formDetail .form-control")?.focus();
     }
 });
+
 
 function showPage(page) {
     if (page == 1) {
@@ -52,7 +78,6 @@ function showPage(page) {
             document.getElementById("btnSave").classList.remove("d-none");
             document.getElementById("modalTitle").textContent = inputItem.value + "の価格を登録";
             document.getElementById("inputDate").value = todayString();
-
         }
     }
 }
@@ -117,15 +142,15 @@ async function updateMenu() {
 
     accCategory.innerHTML = "";
 
-    categories.forEach(async (category, index) => {
-        const items = await DB.items.where({ category }).toArray();
+    for (let i = 0; i < categories.length; i++) {
+        const items = await DB.items.where({ category: categories[i] }).toArray();
 
-        const accordionId = "accordion-" + index;
+        const accordionId = "accordion-" + i;
         accCategory.innerHTML += `
             <div class="accordion-item">
                 <h2 class="accordion-header">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#${accordionId}">
-                        ${category}
+                        ${categories[i]}
                     </button>
                 </h2>
                 <div id="${accordionId}" class="accordion-collapse collapse">
@@ -140,7 +165,7 @@ async function updateMenu() {
             </div>
         `;
 
-    });
+    }
 
 }
 
