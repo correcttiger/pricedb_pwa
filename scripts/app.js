@@ -202,6 +202,8 @@ document.getElementById("accCategory").addEventListener("change", async (event) 
 
     const label = document.querySelector(`label[for="${event.target.id}"]`);
 
+    alert(label.innerText);
+
     await showItemPage(label.innerText);
 
 });
@@ -209,7 +211,9 @@ document.getElementById("accCategory").addEventListener("change", async (event) 
 
 async function showItemPage(item) {
     await DB.open();
+    alert("open");
     const prices = await DB.prices.where({ item }).toArray();
+    alert("get data");
     const tbodyPrice = document.getElementById("tbodyPrice");
     tbodyPrice.innerHTML = "";
     for (const data of prices) {
@@ -225,6 +229,7 @@ async function showItemPage(item) {
         `;
         tbodyPrice.appendChild(row);
     }
+    alert("done");
     document.getElementById("appbarTitle").innerText = item;
 }
 
