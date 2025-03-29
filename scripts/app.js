@@ -14,6 +14,17 @@ window.onload = async function () {
     displayData(data);
 };
 
+
+const clickCategoryFunc = (event) => {
+    event.preventDefault();
+    document.getElementById("inputCategory").value = event.target.textContent;
+}
+
+const clickShopFunc = (event) => {
+    event.preventDefault();
+    document.getElementById("inputShop").value = event.target.textContent;
+}
+
 async function openModal(name = "") {
 
     const modal = new bootstrap.Modal(document.getElementById("modalRegister"));
@@ -23,23 +34,31 @@ async function openModal(name = "") {
     DB.open();
 
     const categories = await DB.items.orderBy("category").uniqueKeys();
-    const datalistCategory = document.getElementById("datalistCategory");
-    datalistCategory.innerHTML = "";
+    const ulCategory = document.getElementById("ulCategory");
+    ulCategory.innerHTML = "";
     for (const category of categories) {
-        console.log(category);
-        const option = document.createElement("option");
-        option.value = category;
-        datalistCategory.appendChild(option);
+        const li = document.createElement("li");
+        const a = document.createElement("a");
+        a.classList.add("dropdown-item");
+        a.href = "#";
+        a.textContent = category;
+        a.addEventListener("click", clickCategoryFunc);
+        li.appendChild(a);
+        ulCategory.appendChild(li);
     }
 
     const shops = await DB.prices.orderBy("shop").uniqueKeys();
-    const datalistShop = document.getElementById("datalistShop");
-    datalistShop.innerHTML = "";
+    const ulShop = document.getElementById("ulShop");
+    ulShop.innerHTML = "";
     for (const shop of shops) {
-        console.log(shop);
-        const option = document.createElement("option");
-        option.value = shop;
-        datalistShop.appendChild(option);
+        const li = document.createElement("li");
+        const a = document.createElement("a");
+        a.classList.add("dropdown-item");
+        a.href = "#";
+        a.textContent = shop;
+        a.addEventListener("click", clickShopFunc);
+        li.appendChild(a);
+        ulShop.appendChild(li);
     }
 
     showPage(name ? 2 : 1);

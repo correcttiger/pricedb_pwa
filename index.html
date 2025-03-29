@@ -92,8 +92,11 @@
                             </div>
                             <div class="input-group mb-3">
                                 <span class="input-group-text">カテゴリ</span>
-                                <input type="text" class="form-control" id="inputCategory" value="" list="datalistCategory" placeholder="">
-                                <datalist id="datalistCategory"></datalist>
+                                <input type="text" class="form-control" id="inputCategory" placeholder="" autocomplete="off">
+                                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"></button>
+                                <ul class="dropdown-menu dropdown-menu-end" id="ulCategory">
+                                    <!-- カテゴリ -->
+                                </ul>
                             </div>
                         </form>
                     </div>
@@ -108,8 +111,11 @@
 
                             <div class="input-group mb-3">
                                 <span class="input-group-text">購入店</span>
-                                <input type="text" class="form-control" id="inputShop" value="" list="datalistShop" placeholder="">
-                                <datalist id="datalistShop"></datalist>
+                                <input type="text" class="form-control" id="inputShop" placeholder="" autocomplete="off">
+                                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"></button>
+                                <ul class="dropdown-menu dropdown-menu-end" id="ulShop">
+                                    <!-- 購入店 -->
+                                </ul>
                             </div>
 
                             <div class="row">
