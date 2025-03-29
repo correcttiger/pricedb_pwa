@@ -1,18 +1,22 @@
-const btnGroup = document.querySelector(".btn-group");
+document.addEventListener("DOMContentLoaded", () => {
 
-if (btnGroup) {
-    btnGroup.querySelectorAll(".btn").forEach(button => {
-        button.addEventListener("click", () => {
-            btnGroup.querySelectorAll(".btn").forEach(btn => btn.classList.remove("active"));
-            button.classList.add("active");
-        });
-    });
-}
+    const btnGroup = document.querySelector(".btn-group");
+    if (btnGroup) {
+        const buttons = btnGroup.querySelectorAll(".btn");
+        const clickFunc = (event) => {
+            for (const button of buttons) {
+                button.classList.remove("active");
+            }
+            event.target.classList.add("active");
+        }
+        for (const button of buttons) {
+            button.addEventListener("click", clickFunc);
+        }
+    }
 
-window.onload = async function () {
-    const data = await DB.prices.toArray();
-    displayData(data);
-};
+    updateMenu();
+
+});
 
 
 const clickCategoryFunc = (event) => {
@@ -31,7 +35,7 @@ async function openModal(name = "") {
 
     document.getElementById("inputItem").value = name;
 
-    DB.open();
+    await DB.open();
 
     const categories = await DB.items.orderBy("category").uniqueKeys();
     const ulCategory = document.getElementById("ulCategory");
@@ -104,7 +108,7 @@ function showPage(page) {
 }
 
 
-function saveData() {
+async function saveData() {
 
     const inputItem = document.getElementById("inputItem");
     const inputAmount = document.getElementById("inputAmount");
@@ -120,6 +124,10 @@ function saveData() {
     const price = inputPrice.value;
     const memo = document.getElementById("inputMemo").value;
 
+    inputAmount.classList.remove("is-invalid");
+    inputCount.classList.remove("is-invalid");
+    inputPrice.classList.remove("is-invalid");
+
     if (isNaN(amount) || amount <= 0 || amount % 1 > 0) {
         inputAmount.classList.add("is-invalid");
         return;
@@ -133,10 +141,6 @@ function saveData() {
         return;
     }
 
-    inputAmount.classList.remove("is-invalid");
-    inputCount.classList.remove("is-invalid");
-    inputPrice.classList.remove("is-invalid");
-
     let tax = 0;
     if (document.getElementById("btnTax8").classList.contains("active")) {
         tax = 8;
@@ -145,18 +149,21 @@ function saveData() {
         tax = 10;
     }
 
-    DB.items.put({ item, category });
-    DB.prices.put({ item, date, shop, amount, count, price, tax, memo });
+    await DB.open();
+    await DB.items.put({ item, category });
+    await DB.prices.put({ item, date, shop, amount, count, price, tax, memo });
 
     const modal = bootstrap.Modal.getInstance(document.getElementById("modalRegister"));
     modal?.hide();
 
-    updateMenu();
+    await updateMenu();
 
 }
 
 
 async function updateMenu() {
+
+    await DB.open();
 
     const accCategory = document.getElementById("accCategory");
     const categories = await DB.items.orderBy("category").uniqueKeys();
@@ -191,20 +198,21 @@ async function updateMenu() {
 }
 
 
-document.getElementById("accCategory").addEventListener("change", (event) => {
+document.getElementById("accCategory").addEventListener("change", async (event) => {
 
     const label = document.querySelector(`label[for="${event.target.id}"]`);
 
-    showItemPage(label.innerText);
+    await showItemPage(label.innerText);
 
 });
 
 
 async function showItemPage(item) {
+    await DB.open();
     const prices = await DB.prices.where({ item }).toArray();
-    const tbPrice = document.getElementById("tbPrice");
-    tbPrice.innerHTML = "";
-    prices.forEach(data => {
+    const tbodyPrice = document.getElementById("tbodyPrice");
+    tbodyPrice.innerHTML = "";
+    for (const data of prices) {
         const row = document.createElement("tr");
         row.innerHTML = `
             <td class="text-center">${data.date}</td>
@@ -215,26 +223,15 @@ async function showItemPage(item) {
             <td class="text-end">${""}</td>
             <td class="text-start">${data.memo}</td>
         `;
-        tbPrice.appendChild(row);
-    });
+        tbodyPrice.appendChild(row);
+    }
     document.getElementById("appbarTitle").innerText = item;
 }
 
 
-// function displayData(data) {
-//     const dataList = document.getElementById("price-list");
-//     dataList.innerHTML = "";
-//     data.forEach(item => {
-//         const row = document.createElement("tr");
-//         row.innerHTML = `
-//             <td>${item.date}</td>
-//             <td>${item.shop}</td>
-//             <td>${item.amount}</td>
-//             <td>${item.count}</td>
-//             <td>${item.price}</td>
-//             <td>${""}</td>
-//             <td>${item.memo}</td>
-//         `;
-//         dataList.appendChild(row);
-//     });
-// }
+document.getElementById("tbodyPrice").addEventListener("click", (event) => {
+    const targetRow = event.target.closest("tr");
+    if (targetRow) {
+        print("Clicked Row:", targetRow.rowIndex);
+    }
+});
