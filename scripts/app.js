@@ -211,9 +211,9 @@ document.getElementById("accCategory").addEventListener("change", async (event) 
 
 async function showItemPage(item) {
     await DB.open();
-    alert("open");
-    const prices = await DB.prices.where({ item }).toArray();
-    alert("get data");
+    alert("opened");
+    const prices = await DB.prices.where({ item: item }).toArray();
+    alert("got data");
     const tbodyPrice = document.getElementById("tbodyPrice");
     tbodyPrice.innerHTML = "";
     for (const data of prices) {
