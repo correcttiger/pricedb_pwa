@@ -20,7 +20,7 @@ async function openModal(name = "") {
 
     document.getElementById("inputItem").value = name;
 
-    alert("aaaa");
+    DB.open();
 
     const categories = await DB.items.orderBy("category").uniqueKeys();
     const datalistCategory = document.getElementById("datalistCategory");
@@ -32,8 +32,6 @@ async function openModal(name = "") {
         datalistCategory.appendChild(option);
     }
 
-    alert("bbbb");
-
     const shops = await DB.prices.orderBy("shop").uniqueKeys();
     const datalistShop = document.getElementById("datalistShop");
     datalistShop.innerHTML = "";
@@ -44,13 +42,9 @@ async function openModal(name = "") {
         datalistShop.appendChild(option);
     }
 
-    alert("cccc");
-
     showPage(name ? 2 : 1);
     inputItem.classList.remove("is-invalid");
     modal.show();
-
-    alert("dddd");
 
 }
 
