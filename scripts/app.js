@@ -211,8 +211,11 @@ document.getElementById("accCategory").addEventListener("change", async (event) 
 
 async function showItemPage(item) {
     await DB.open();
-    alert("opened");
-    const prices = await DB.prices.where({ item: item }).toArray();
+    alert("openeded");
+    //const prices = await DB.prices.where({ item }).toArray();
+    const arr = await DB.prices.toArray();
+    alert("len: " + arr.length);
+    const prices = arr.filter(p => p.item == item);
     alert("got data");
     const tbodyPrice = document.getElementById("tbodyPrice");
     tbodyPrice.innerHTML = "";
