@@ -19,54 +19,99 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-const clickCategoryFunc = (event) => {
-    event.preventDefault();
-    document.getElementById("inputCategory").value = event.target.textContent;
-}
+document.getElementById("ulCategory").addEventListener("click", (event) => {
+    document.getElementById("inputCategory").value = event.target.closest("a")?.textContent || "";
+});
 
-const clickShopFunc = (event) => {
-    event.preventDefault();
-    document.getElementById("inputShop").value = event.target.textContent;
-}
+document.getElementById("ulShop").addEventListener("click", (event) => {
+    document.getElementById("inputShop").value = event.target.closest("a")?.textContent || "";
+});
 
-async function openModal(name = "") {
 
-    const modal = new bootstrap.Modal(document.getElementById("modalRegister"));
-
-    document.getElementById("inputItem").value = name;
+async function openModal(id = -1, item = "") {
 
     await DB.open();
 
     const categories = await DB.items.orderBy("category").uniqueKeys();
     const ulCategory = document.getElementById("ulCategory");
-    ulCategory.innerHTML = "";
+    ulCategory.replaceChildren();
     for (const category of categories) {
         const li = document.createElement("li");
         const a = document.createElement("a");
         a.classList.add("dropdown-item");
         a.href = "#";
         a.textContent = category;
-        a.addEventListener("click", clickCategoryFunc);
         li.appendChild(a);
         ulCategory.appendChild(li);
     }
 
     const shops = await DB.prices.orderBy("shop").uniqueKeys();
     const ulShop = document.getElementById("ulShop");
-    ulShop.innerHTML = "";
+    ulShop.replaceChildren();
     for (const shop of shops) {
         const li = document.createElement("li");
         const a = document.createElement("a");
         a.classList.add("dropdown-item");
         a.href = "#";
         a.textContent = shop;
-        a.addEventListener("click", clickShopFunc);
         li.appendChild(a);
         ulShop.appendChild(li);
     }
 
-    showPage(name ? 2 : 1);
+    const inputId = document.getElementById("inputId");
+    const inputItem = document.getElementById("inputItem");
+    const inputDate = document.getElementById("inputDate");
+
+    inputDate.value = todayString();
+
+    if (id == -1) { //追加
+        inputId.value = -1;
+        inputItem.value = item;
+        showPage(item ? 2 : 1);
+    }
+    else { //編集
+        const data = await DB.prices.get(id);
+        if (data) {
+            const category = await DB.items.get(data.item);
+            if (category) {
+                inputId.value = id;
+                inputItem.value = data.item;
+                document.getElementById("inputCategory").value = category.category;
+                inputDate.value = data.date;
+                document.getElementById("inputShop").value = data.shop;
+                document.getElementById("inputAmount").value = data.amount;
+                document.getElementById("inputCount").value = data.count;
+                document.getElementById("inputPrice").value = data.price;
+                document.getElementById("inputMemo").value = data.memo;
+                const btnTaxInc = document.getElementById("btnTaxInc");
+                const btnTax8 = document.getElementById("btnTax8");
+                const btnTax10 = document.getElementById("btnTax10");
+                btnTaxInc.classList.remove("active");
+                btnTax8.classList.remove("active");
+                btnTax10.classList.remove("active");
+                switch (data.tax) {
+                    case 8: btnTax8.classList.add("active"); break;
+                    case 10: btnTax10.classList.add("active"); break;
+                    default: btnTaxInc.classList.add("active"); break;
+                }
+                showPage(2);
+            }
+            else {
+                inputId.value = -1;
+                inputItem.value = "";
+                showPage(1);
+            }
+        }
+        else {
+            inputId.value = -1;
+            inputItem.value = "";
+            showPage(1);
+        }
+    }
+
     inputItem.classList.remove("is-invalid");
+
+    const modal = new bootstrap.Modal(document.getElementById("modalRegister"));
     modal.show();
 
 }
@@ -83,6 +128,13 @@ document.getElementById("modalRegister").addEventListener("shown.bs.modal", () =
 
 
 function showPage(page) {
+    const id = document.getElementById("inputId").value - 0;
+    if (id == -1) {
+        document.getElementById("btnDelete").classList.add("d-none");
+    }
+    else {
+        document.getElementById("btnDelete").classList.remove("d-none");
+    }
     if (page == 1) {
         document.getElementById("step1").classList.remove("d-none");
         document.getElementById("step2").classList.add("d-none");
@@ -101,8 +153,7 @@ function showPage(page) {
             document.getElementById("btnNextForm").classList.add("d-none");
             document.getElementById("btnPrevForm").classList.remove("d-none");
             document.getElementById("btnSave").classList.remove("d-none");
-            document.getElementById("modalTitle").textContent = inputItem.value + "の価格を登録";
-            document.getElementById("inputDate").value = todayString();
+            document.getElementById("modalTitle").textContent = inputItem.value + "の価格を" + (id == -1 ? "登録" : "編集");
         }
     }
 }
@@ -115,6 +166,7 @@ async function saveData() {
     const inputCount = document.getElementById("inputCount");
     const inputPrice = document.getElementById("inputPrice");
 
+    const id = document.getElementById("inputId").value - 0;
     const item = inputItem.value;
     const category = document.getElementById("inputCategory").value;
     const date = document.getElementById("inputDate").value || todayString();
@@ -151,13 +203,30 @@ async function saveData() {
 
     await DB.open();
     await DB.items.put({ item, category });
-    await DB.prices.put({ item, date, shop, amount, count, price, tax, memo });
+    if (id == -1) {
+        await DB.prices.put({ item, date, shop, amount, count, price, tax, memo });
+    }
+    else {
+        await DB.prices.update(id, { item, date, shop, amount, count, price, tax, memo });
+    }
 
-    const modal = bootstrap.Modal.getInstance(document.getElementById("modalRegister"));
-    modal?.hide();
+    bootstrap.Modal.getInstance(document.getElementById("modalRegister"))?.hide();
 
     await updateMenu();
+    await showItemPage(item);
 
+}
+
+
+async function deleteData() {
+    const id = document.getElementById("inputId").value - 0;
+    if (id != -1 && confirm("この価格データを削除します。\nよろしいですか？")) {
+        await DB.open();
+        await DB.prices.delete(id);
+        bootstrap.Modal.getInstance(document.getElementById("modalRegister"))?.hide();
+        await updateMenu();
+        await showItemPage(item);
+    }
 }
 
 
@@ -168,7 +237,7 @@ async function updateMenu() {
     const accCategory = document.getElementById("accCategory");
     const categories = await DB.items.orderBy("category").uniqueKeys();
 
-    accCategory.innerHTML = "";
+    accCategory.replaceChildren();
 
     for (let i = 0; i < categories.length; i++) {
         const items = await DB.items.where({ category: categories[i] }).toArray();
@@ -199,29 +268,19 @@ async function updateMenu() {
 
 
 document.getElementById("accCategory").addEventListener("change", async (event) => {
-
     const label = document.querySelector(`label[for="${event.target.id}"]`);
-
-    alert(label.innerText);
-
     await showItemPage(label.innerText);
-
 });
 
 
 async function showItemPage(item) {
     await DB.open();
-    alert("openeded");
-    //const prices = await DB.prices.where({ item }).toArray();
-    const arr = await DB.prices.toArray();
-    alert("len: " + arr.length);
-    const prices = arr.filter(p => p.item == item);
-    alert("got data");
+    const prices = await DB.prices.where({ item }).toArray();
     const tbodyPrice = document.getElementById("tbodyPrice");
     tbodyPrice.innerHTML = "";
     for (const data of prices) {
-        const row = document.createElement("tr");
-        row.innerHTML = `
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
             <td class="text-center">${data.date}</td>
             <td class="text-center">${data.shop}</td>
             <td class="text-end">${data.amount}</td>
@@ -230,9 +289,12 @@ async function showItemPage(item) {
             <td class="text-end">${""}</td>
             <td class="text-start">${data.memo}</td>
         `;
-        tbodyPrice.appendChild(row);
+        // tr.addEventListener("click", (event) => {
+        //     alert("id: " + data.id);
+        // });
+        tr.setAttribute("row-id", data.id);
+        tbodyPrice.appendChild(tr);
     }
-    alert("done");
     document.getElementById("appbarTitle").innerText = item;
 }
 
@@ -240,7 +302,8 @@ async function showItemPage(item) {
 document.getElementById("tbodyPrice").addEventListener("click", (event) => {
     const targetRow = event.target.closest("tr");
     if (targetRow) {
-        print("Clicked Row:", targetRow.rowIndex);
+        const id = targetRow.getAttribute("row-id") - 0 || -1;
+        openModal(id);
     }
 });
 

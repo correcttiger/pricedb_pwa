@@ -33,7 +33,7 @@
                 ☰
             </button>
             <span class="navbar-brand mx-auto" id="appbarTitle">Price DB</span>
-            <button class="btn btn-primary" type="button" onclick="clearDB();">
+            <button class="btn btn-primary" type="button" onclick="">
                 ゴミ箱
             </button>
         </div>
@@ -85,6 +85,9 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+
+                    <!-- IDを保持する -->
+                    <input type="hidden" id="inputId">
 
                     <div id="step1">
                         <form id="formItem">
@@ -186,9 +189,10 @@
 
                 </div>
                 <div class="modal-footer">
+                    <button class="btn btn-danger me-auto d-none" id="btnDelete" onclick="deleteData();">削除</button>
                     <button class="btn btn-primary" id="btnNextForm" onclick="showPage(2);">次へ</button>
                     <button class="btn btn-secondary d-none" id="btnPrevForm" onclick="showPage(1);">戻る</button>
-                    <button class="btn btn-primary d-none" id="btnSave" , onclick="saveData();">完了</button>
+                    <button class="btn btn-primary d-none" id="btnSave" onclick="saveData();">完了</button>
                 </div>
             </div>
         </div>
