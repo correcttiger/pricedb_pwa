@@ -243,3 +243,14 @@ document.getElementById("tbodyPrice").addEventListener("click", (event) => {
         print("Clicked Row:", targetRow.rowIndex);
     }
 });
+
+
+async function clearDB() {
+
+    await DB.delete();
+
+    await updateMenu();
+
+    alert("baibaiki-n");
+    
+}
