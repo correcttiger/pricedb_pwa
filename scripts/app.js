@@ -222,10 +222,17 @@ async function deleteData() {
     const id = document.getElementById("inputId").value - 0;
     if (id != -1 && confirm("この価格データを削除します。\nよろしいですか？")) {
         await DB.open();
-        await DB.prices.delete(id);
+        const data = await DB.prices.get(id);
+        if (data) {
+            await DB.prices.delete(id);
+            const otherData = await DB.prices.where({ item: data.item }).toArray();
+            if (otherData.length == 0) {
+                await DB.items.delete(data.item);
+            }
+            await updateMenu();
+            await showItemPage(data.item);
+        }
         bootstrap.Modal.getInstance(document.getElementById("modalRegister"))?.hide();
-        await updateMenu();
-        await showItemPage(item);
     }
 }
 
@@ -274,10 +281,19 @@ document.getElementById("accCategory").addEventListener("change", async (event) 
 
 
 async function showItemPage(item) {
+
     await DB.open();
+
     const prices = await DB.prices.where({ item }).toArray();
     const tbodyPrice = document.getElementById("tbodyPrice");
+
     tbodyPrice.innerHTML = "";
+
+    if (prices.length == 0) {
+        document.getElementById("appbarTitle").innerText = "Price DB";
+        return;
+    }
+
     for (const data of prices) {
         const tr = document.createElement("tr");
         tr.innerHTML = `
@@ -295,7 +311,9 @@ async function showItemPage(item) {
         tr.setAttribute("row-id", data.id);
         tbodyPrice.appendChild(tr);
     }
+
     document.getElementById("appbarTitle").innerText = item;
+
 }
 
 
