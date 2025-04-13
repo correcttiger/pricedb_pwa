@@ -60,14 +60,24 @@ async function openModal(id = -1, item = "") {
 
     const inputId = document.getElementById("inputId");
     const inputItem = document.getElementById("inputItem");
+    const inputCategory = document.getElementById("inputCategory");
     const inputDate = document.getElementById("inputDate");
 
     inputDate.value = todayString();
 
     if (id == -1) { //追加
         inputId.value = -1;
-        inputItem.value = item;
-        showPage(item ? 2 : 1);
+        if (item) {
+            const category = await DB.items.get(data.item);
+            inputItem.value = item;
+            inputCategory.value = category.category;
+            showPage(2);
+        }
+        else{
+            inputItem.value = "";
+            inputCategory.value = "";
+            showPage(1);
+        }
     }
     else { //編集
         const data = await DB.prices.get(id);
@@ -76,7 +86,7 @@ async function openModal(id = -1, item = "") {
             if (category) {
                 inputId.value = id;
                 inputItem.value = data.item;
-                document.getElementById("inputCategory").value = category.category;
+                inputCategory.value = category.category;
                 inputDate.value = data.date;
                 document.getElementById("inputShop").value = data.shop;
                 document.getElementById("inputAmount").value = data.amount;
@@ -99,12 +109,14 @@ async function openModal(id = -1, item = "") {
             else {
                 inputId.value = -1;
                 inputItem.value = "";
+                inputCategory.value = "";
                 showPage(1);
             }
         }
         else {
             inputId.value = -1;
             inputItem.value = "";
+            inputCategory.value = "";
             showPage(1);
         }
     }
@@ -324,14 +336,3 @@ document.getElementById("tbodyPrice").addEventListener("click", (event) => {
         openModal(id);
     }
 });
-
-
-async function clearDB() {
-
-    await DB.delete();
-
-    await updateMenu();
-
-    alert("baibaiki-n");
-    
-}

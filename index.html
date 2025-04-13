@@ -30,12 +30,20 @@
     <nav class="navbar navbar-dark bg-primary fixed-top">
         <div class="container-fluid">
             <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu" onclick="updateMenu();">
-                ☰
+                <span class="navbar-toggler-icon"></span>
             </button>
             <span class="navbar-brand mx-auto" id="appbarTitle">Price DB</span>
-            <button class="btn btn-primary" type="button" onclick="">
-                ゴミ箱
+            <!-- <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu" onclick="updateMenu();">
+                <i class="bi bi-three-dots"></i>
+            </button> -->
+            <button class="btn btn-primary" type="button" data-bs-toggle="dropdown">
+                ･･･
             </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li><a class="dropdown-item" href="#" onclick="importFile();">インポート</a></li>
+                <li><a class="dropdown-item" href="#" onclick="exportJson();">エクスポート</a></li>
+                <li><a class="dropdown-item" href="#" onclick="deleteDB();">全削除</a></li>
+            </ul>
         </div>
     </nav>
 
