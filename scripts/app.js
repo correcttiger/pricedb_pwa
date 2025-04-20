@@ -67,6 +67,11 @@ async function openModal(id = -1, item = "") {
 
     if (id == -1) { //追加
         inputId.value = -1;
+        document.getElementById("inputShop").value = "";
+        document.getElementById("inputAmount").value = "";
+        document.getElementById("inputCount").value = "";
+        document.getElementById("inputPrice").value = "";
+        document.getElementById("inputMemo").value = "";
         if (item) {
             const category = await DB.items.get(data.item);
             inputItem.value = item;
@@ -292,6 +297,17 @@ document.getElementById("accCategory").addEventListener("change", async (event) 
 });
 
 
+const myGrid = new gridjs.Grid({
+    columns: ["購入日", "購入店", "量", "個数", "価格", "指標", "備考"],
+    data: [],
+    search: true,
+    pagination: false,
+    sort: true
+}).on("rowClick", (event, row) => {
+    alert(row.cells[1].data)
+}).render(document.getElementById("testTable"));
+
+
 async function showItemPage(item) {
 
     await DB.open();
@@ -306,23 +322,27 @@ async function showItemPage(item) {
         return;
     }
 
-    for (const data of prices) {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-            <td class="text-center">${data.date}</td>
-            <td class="text-center">${data.shop}</td>
-            <td class="text-end">${data.amount}</td>
-            <td class="text-end">${data.count}</td>
-            <td class="text-end">${data.price}</td>
-            <td class="text-end">${""}</td>
-            <td class="text-start">${data.memo}</td>
-        `;
-        // tr.addEventListener("click", (event) => {
-        //     alert("id: " + data.id);
-        // });
-        tr.setAttribute("row-id", data.id);
-        tbodyPrice.appendChild(tr);
-    }
+    myGrid.updateConfig({
+        data: prices.map(data => [data.date, data.shop, data.amount, data.count, data.price, "", data.memo])
+    }).forceRender();
+
+    // for (const data of prices) {
+    //     const tr = document.createElement("tr");
+    //     tr.innerHTML = `
+    //         <td class="text-center">${data.date}</td>
+    //         <td class="text-center">${data.shop}</td>
+    //         <td class="text-end">${data.amount}</td>
+    //         <td class="text-end">${data.count}</td>
+    //         <td class="text-end">${data.price}</td>
+    //         <td class="text-end">${""}</td>
+    //         <td class="text-start">${data.memo}</td>
+    //     `;
+    //     // tr.addEventListener("click", (event) => {
+    //     //     alert("id: " + data.id);
+    //     // });
+    //     tr.setAttribute("row-id", data.id);
+    //     tbodyPrice.appendChild(tr);
+    // }
 
     document.getElementById("appbarTitle").innerText = item;
 

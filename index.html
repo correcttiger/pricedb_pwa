@@ -8,8 +8,10 @@
     <link rel="apple-touch-icon" href="images/icon_128.png" sizes="128x128" />
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="styles/bootstrap.min.css">
+    <link rel="stylesheet" href="styles/mermaid.min.css">
     <script src="scripts/bootstrap.bundle.min.js"></script>
     <script src="scripts/dexie.min.js"></script>
+    <script src="scripts/gridjs.umd.js"></script>
     <style>
         /* 左メニューのスクロール対応 */
         .offcanvas-body {
@@ -59,18 +61,20 @@
         </div>
     </div>
 
-    <div class="table-responsive mt-5 pt-4">
+    <div id="testTable"></div>
+
+    <div class="table-responsive mt-5 pt-4" style="height: calc(100vh - 56px)"> <!-- 56px: navbar -->
 
         <table class="table table-bordered table-hover" style="min-width: 800px">
             <thead class="table-dark">
                 <tr st>
-                    <th scope="col" class="text-center" style="width: 50px;">購入日</th>
-                    <th scope="col" class="text-center" style="width: 50px;">購入店</th>
-                    <th scope="col" class="text-center" style="width: 25px;">量</th>
-                    <th scope="col" class="text-center" style="width: 25px;">個数</th>
-                    <th scope="col" class="text-center" style="width: 25px;">価格</th>
-                    <th scope="col" class="text-center" style="width: 25px;">指標</th>
-                    <th scope="col" class="text-center" style="width: 100px;">備考</th>
+                    <th scope="col" class="text-center" style="width: 40px;">a購入日</th>
+                    <th scope="col" class="text-center" style="width: 40px;">a購入店</th>
+                    <th scope="col" class="text-center" style="width: 15px;">a量</th>
+                    <th scope="col" class="text-center" style="width: 15px;">a個数</th>
+                    <th scope="col" class="text-center" style="width: 15px;">a価格</th>
+                    <th scope="col" class="text-center" style="width: 15px;">a指標</th>
+                    <th scope="col" class="text-center" style="width: 80px;">a備考</th>
                 </tr>
             </thead>
             <tbody id="tbodyPrice">
