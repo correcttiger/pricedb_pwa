@@ -55,37 +55,17 @@
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
         </div>
         <div class="offcanvas-body">
+            <button class="btn btn-primary d-block mx-auto mb-3" type="button" onclick="openModal();">新しく商品を登録</button>
             <div class="accordion" id="accCategory">
                 <!-- カテゴリアコーディオン -->
             </div>
         </div>
     </div>
 
-    <div id="testTable"></div>
-
-    <div class="table-responsive mt-5 pt-4" style="height: calc(100vh - 56px)"> <!-- 56px: navbar -->
-
-        <table class="table table-bordered table-hover" style="min-width: 800px">
-            <thead class="table-dark">
-                <tr st>
-                    <th scope="col" class="text-center" style="width: 40px;">a購入日</th>
-                    <th scope="col" class="text-center" style="width: 40px;">a購入店</th>
-                    <th scope="col" class="text-center" style="width: 15px;">a量</th>
-                    <th scope="col" class="text-center" style="width: 15px;">a個数</th>
-                    <th scope="col" class="text-center" style="width: 15px;">a価格</th>
-                    <th scope="col" class="text-center" style="width: 15px;">a指標</th>
-                    <th scope="col" class="text-center" style="width: 80px;">a備考</th>
-                </tr>
-            </thead>
-            <tbody id="tbodyPrice">
-                <!-- 価格表 -->
-            </tbody>
-        </table>
-
-    </div>
+    <div id="priceTable"></div>
 
     <button class="btn btn-primary position-fixed bottom-0 end-0 mb-3 me-3"
-        style="width: 60px; height: 60px; border-radius: 50%; font-size: 30px;" onclick="openModal();">+</button>
+        style="width: 60px; height: 60px; border-radius: 50%; font-size: 30px;" onclick="openModalForSelected();">+</button>
 
     <!-- Modal -->
     <div class="modal fade" id="modalRegister" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"

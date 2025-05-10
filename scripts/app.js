@@ -28,6 +28,21 @@ document.getElementById("ulShop").addEventListener("click", (event) => {
 });
 
 
+function setBtnTax(tax) {
+    const btnTaxInc = document.getElementById("btnTaxInc");
+    const btnTax8 = document.getElementById("btnTax8");
+    const btnTax10 = document.getElementById("btnTax10");
+    btnTaxInc.classList.remove("active");
+    btnTax8.classList.remove("active");
+    btnTax10.classList.remove("active");
+    switch (tax) {
+        case 8: btnTax8.classList.add("active"); break;
+        case 10: btnTax10.classList.add("active"); break;
+        default: btnTaxInc.classList.add("active"); break;
+    }
+}
+
+
 async function openModal(id = -1, item = "") {
 
     await DB.open();
@@ -73,10 +88,17 @@ async function openModal(id = -1, item = "") {
         document.getElementById("inputPrice").value = "";
         document.getElementById("inputMemo").value = "";
         if (item) {
-            const category = await DB.items.get(data.item);
-            inputItem.value = item;
-            inputCategory.value = category.category;
-            showPage(2);
+            const category = await DB.items.get(item);
+            const data = await DB.prices.where("item").equals(item).first();
+            if (category && data) {
+                inputItem.value = item;
+                inputCategory.value = category.category;
+                setBtnTax(data?.tax);
+                showPage(2);
+            }
+            else{
+                return;
+            }
         }
         else{
             inputItem.value = "";
@@ -98,17 +120,7 @@ async function openModal(id = -1, item = "") {
                 document.getElementById("inputCount").value = data.count;
                 document.getElementById("inputPrice").value = data.price;
                 document.getElementById("inputMemo").value = data.memo;
-                const btnTaxInc = document.getElementById("btnTaxInc");
-                const btnTax8 = document.getElementById("btnTax8");
-                const btnTax10 = document.getElementById("btnTax10");
-                btnTaxInc.classList.remove("active");
-                btnTax8.classList.remove("active");
-                btnTax10.classList.remove("active");
-                switch (data.tax) {
-                    case 8: btnTax8.classList.add("active"); break;
-                    case 10: btnTax10.classList.add("active"); break;
-                    default: btnTaxInc.classList.add("active"); break;
-                }
+                setBtnTax(data.btnTax8);
                 showPage(2);
             }
             else {
@@ -131,6 +143,12 @@ async function openModal(id = -1, item = "") {
     const modal = new bootstrap.Modal(document.getElementById("modalRegister"));
     modal.show();
 
+}
+
+
+async function openModalForSelected() {
+    const appbarTitle = document.getElementById("appbarTitle");
+    openModal(-1, appbarTitle.innerText);
 }
 
 
@@ -242,7 +260,7 @@ async function deleteData() {
         const data = await DB.prices.get(id);
         if (data) {
             await DB.prices.delete(id);
-            const otherData = await DB.prices.where({ item: data.item }).toArray();
+            const otherData = await DB.prices.where("item").equals(data.item).toArray();
             if (otherData.length == 0) {
                 await DB.items.delete(data.item);
             }
@@ -264,7 +282,7 @@ async function updateMenu() {
     accCategory.replaceChildren();
 
     for (let i = 0; i < categories.length; i++) {
-        const items = await DB.items.where({ category: categories[i] }).toArray();
+        const items = await DB.items.where("category").equals(categories[i]).toArray();
 
         const accordionId = "accordion-" + i;
         accCategory.innerHTML += `
@@ -298,24 +316,30 @@ document.getElementById("accCategory").addEventListener("change", async (event) 
 
 
 const myGrid = new gridjs.Grid({
-    columns: ["購入日", "購入店", "量", "個数", "価格", "指標", "備考"],
+    columns: [
+        {id: "id", name: "ID", hidden: true},
+        {id: "date", name: "購入日", width: "40px"},
+        {id: "shop", name: "購入店", width: "40px"},
+        {id: "amount", name: "量", width: "20px"},
+        {id: "count", name: "個数", width: "20px"},
+        {id: "price", name: "価格", width: "20px"},
+        {id: "ratio", name: "指標", width: "20px"},
+        {id: "memo", name: "備考", width: "60px"}
+    ],
     data: [],
     search: true,
     pagination: false,
     sort: true
 }).on("rowClick", (event, row) => {
-    alert(row.cells[1].data)
-}).render(document.getElementById("testTable"));
+    openModal(row.cells[0].data - 0);
+}).render(document.getElementById("priceTable"));
 
 
 async function showItemPage(item) {
 
     await DB.open();
 
-    const prices = await DB.prices.where({ item }).toArray();
-    const tbodyPrice = document.getElementById("tbodyPrice");
-
-    tbodyPrice.innerHTML = "";
+    const prices = await DB.prices.where("item").equals(item).toArray();
 
     if (prices.length == 0) {
         document.getElementById("appbarTitle").innerText = "Price DB";
@@ -323,36 +347,18 @@ async function showItemPage(item) {
     }
 
     myGrid.updateConfig({
-        data: prices.map(data => [data.date, data.shop, data.amount, data.count, data.price, "", data.memo])
+        data: prices.map(data => ({
+            id: data.id,
+            date: data.date,
+            shop: data.shop,
+            amount: data.amount,
+            count: data.count,
+            price: data.price,
+            ratio: "",
+            memo: data.memo
+        }))
     }).forceRender();
-
-    // for (const data of prices) {
-    //     const tr = document.createElement("tr");
-    //     tr.innerHTML = `
-    //         <td class="text-center">${data.date}</td>
-    //         <td class="text-center">${data.shop}</td>
-    //         <td class="text-end">${data.amount}</td>
-    //         <td class="text-end">${data.count}</td>
-    //         <td class="text-end">${data.price}</td>
-    //         <td class="text-end">${""}</td>
-    //         <td class="text-start">${data.memo}</td>
-    //     `;
-    //     // tr.addEventListener("click", (event) => {
-    //     //     alert("id: " + data.id);
-    //     // });
-    //     tr.setAttribute("row-id", data.id);
-    //     tbodyPrice.appendChild(tr);
-    // }
 
     document.getElementById("appbarTitle").innerText = item;
 
 }
-
-
-document.getElementById("tbodyPrice").addEventListener("click", (event) => {
-    const targetRow = event.target.closest("tr");
-    if (targetRow) {
-        const id = targetRow.getAttribute("row-id") - 0 || -1;
-        openModal(id);
-    }
-});
