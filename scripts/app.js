@@ -330,7 +330,7 @@ const myGrid = new gridjs.Grid({
     search: true,
     pagination: false,
     sort: true,
-    width: "1500px"
+    width: "700px"
 }).on("rowClick", (event, row) => {
     openModal(row.cells[0].data - 0);
 }).render(document.getElementById("priceTable"));

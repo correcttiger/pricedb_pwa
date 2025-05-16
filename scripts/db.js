@@ -33,11 +33,7 @@ function selectFile(accept) {
 
 async function importFile() {
 
-    console.log("start");
-
     const file = await selectFile(".csv,.json");
-
-    console.log("end");
 
     if (!file) return;
 
@@ -59,9 +55,9 @@ async function importFile() {
                 item: row[1],
                 date: "20" + row[5],
                 shop: row[0],
-                amount: 1,
-                count: row[3] - 0,
-                price: row[2] - 0,
+                amount: row[2] - 0,
+                count: 1,
+                price: row[3] - 0,
                 tax: row[4] - 0,
                 memo: row[6]
             });
