@@ -315,14 +315,19 @@ document.getElementById("accCategory").addEventListener("change", async (event) 
 });
 
 
+const formatWithCommaRightAlign = value => {
+  const formatted = value == null || value === "" ? "" : Number(value).toLocaleString();
+  return gridjs.html(`<div style="text-align: right;">${formatted}</div>`);
+};
+
 const myGrid = new gridjs.Grid({
     columns: [
         {id: "id", name: "ID", hidden: true},
-        {id: "date", name: "購入日", width: "40px"},
-        {id: "shop", name: "購入店", width: "40px"},
-        {id: "amount", name: "量", width: "20px"},
-        {id: "count", name: "個数", width: "20px"},
-        {id: "price", name: "価格", width: "20px"},
+        {id: "date", name: "日", width: "40px"},
+        {id: "shop", name: "店", width: "40px"},
+        {id: "amount", name: "量", width: "20px", formatter: formatWithCommaRightAlign},
+        {id: "count", name: "個数", width: "20px", formatter: formatWithCommaRightAlign},
+        {id: "price", name: "￥", width: "20px", formatter: formatWithCommaRightAlign},
         {id: "ratio", name: "指標", width: "20px"},
         {id: "memo", name: "備考", width: "60px"}
     ],
