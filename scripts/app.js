@@ -352,6 +352,13 @@ async function showItemPage(item) {
         return;
     }
 
+    for (const data of prices) {
+        data.priceWithTax = Math.floor(data.price * (100 + data.tax) / 100);
+        data.unitPrice = data.priceWithTax / data.amount / data.count;
+    }
+
+    const minUnitPrice = Math.min(...prices.map(data => data.unitPrice));
+
     myGrid.updateConfig({
         data: prices.map(data => ({
             id: data.id,
@@ -359,8 +366,8 @@ async function showItemPage(item) {
             shop: data.shop,
             amount: data.amount,
             count: data.count,
-            price: data.price,
-            ratio: "",
+            price: data.priceWithTax,
+            ratio: (data.unitPrice / minUnitPrice).toFixed(3),
             memo: data.memo
         }))
     }).forceRender();
