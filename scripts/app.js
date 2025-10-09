@@ -120,7 +120,7 @@ async function openModal(id = -1, item = "") {
                 document.getElementById("inputCount").value = data.count;
                 document.getElementById("inputPrice").value = data.price;
                 document.getElementById("inputMemo").value = data.memo;
-                setBtnTax(data.btnTax8);
+                setBtnTax(data.tax);
                 showPage(2);
             }
             else {
