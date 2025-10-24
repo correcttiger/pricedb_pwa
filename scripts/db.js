@@ -5,6 +5,15 @@ DB.version(1).stores({
     prices: "++id, item, date, shop, amount, count, price, tax, memo"
 });
 
+DB.version(2).stores({
+    items: "&item, category, amountUnit",
+    prices: "++id, item, date, shop, amount, count, price, tax, memo"
+}).upgrade(tx => {
+    return tx.table("items").toCollection().modify(item => {
+        item.amountUnit ||= "g"
+    });
+});
+
 
 function todayString() {
     const today = new Date();
@@ -50,7 +59,7 @@ async function importFile() {
         }
 
         for (const row of rows) {
-            await DB.items.put({ item: row[1], category: "未分類" });
+            await DB.items.put({ item: row[1], category: "未分類", amountUnit: "g" });
             await DB.prices.put({
                 item: row[1],
                 date: "20" + row[5],
@@ -68,10 +77,16 @@ async function importFile() {
 
         const data = JSON.parse(text);
 
-        if(data.version == DB.verno) {
-            await DB.items.bulkAdd(data.items);
-            await DB.prices.bulkAdd(data.prices);
+        switch (data.version) {
+            case 1:
+                for (const item of data.items) {
+                    item.amountUnit = "g";
+                }
+                break;
         }
+
+        await DB.items.bulkAdd(data.items);
+        await DB.prices.bulkAdd(data.prices);
 
     }
     

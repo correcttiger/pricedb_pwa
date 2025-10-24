@@ -88,13 +88,23 @@
                                 <input type="text" class="form-control" id="inputItem" placeholder="" required>
                                 <div class="invalid-feedback">商品名を入力してください。</div>
                             </div>
-                            <div class="input-group mb-3">
-                                <span class="input-group-text">カテゴリ</span>
-                                <input type="text" class="form-control" id="inputCategory" placeholder="" autocomplete="off">
-                                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"></button>
-                                <ul class="dropdown-menu dropdown-menu-end" id="ulCategory">
-                                    <!-- カテゴリ -->
-                                </ul>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text">カテゴリ</span>
+                                        <input type="text" class="form-control" id="inputCategory" placeholder="" autocomplete="off">
+                                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"></button>
+                                        <ul class="dropdown-menu dropdown-menu-end" id="ulCategory">
+                                            <!-- カテゴリ -->
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text">単位</span>
+                                        <input type="text" class="form-control" id="inputAmountUnit" placeholder="" autocomplete="off">
+                                    </div>
+                                </div>
                             </div>
                         </form>
                     </div>
@@ -122,7 +132,7 @@
                                         <span class="input-group-text">量</span>
                                         <input type="number" class="form-control fs-3 text-end" id="inputAmount"
                                             placeholder="">
-                                        <span class="input-group-text">g</span>
+                                        <span class="input-group-text" id="spanAmountUnit">g</span>
                                         <div class="invalid-feedback">1以上の整数で入力してください。</div>
                                     </div>
                                 </div>

@@ -76,6 +76,7 @@ async function openModal(id = -1, item = "") {
     const inputId = document.getElementById("inputId");
     const inputItem = document.getElementById("inputItem");
     const inputCategory = document.getElementById("inputCategory");
+    const inputAmountUnit = document.getElementById("inputAmountUnit");
     const inputDate = document.getElementById("inputDate");
 
     inputDate.value = todayString();
@@ -103,6 +104,7 @@ async function openModal(id = -1, item = "") {
         else{
             inputItem.value = "";
             inputCategory.value = "";
+            inputAmountUnit.value = "g";
             showPage(1);
         }
     }
@@ -114,6 +116,7 @@ async function openModal(id = -1, item = "") {
                 inputId.value = id;
                 inputItem.value = data.item;
                 inputCategory.value = category.category;
+                inputAmountUnit.value = category.amountUnit;
                 inputDate.value = data.date;
                 document.getElementById("inputShop").value = data.shop;
                 document.getElementById("inputAmount").value = data.amount;
@@ -127,6 +130,7 @@ async function openModal(id = -1, item = "") {
                 inputId.value = -1;
                 inputItem.value = "";
                 inputCategory.value = "";
+                inputAmountUnit.value = "g";
                 showPage(1);
             }
         }
@@ -177,6 +181,7 @@ function showPage(page) {
         document.getElementById("btnPrevForm").classList.add("d-none");
         document.getElementById("btnSave").classList.add("d-none");
         document.getElementById("modalTitle").textContent = "商品を登録";
+        document.getElementById("spanAmountUnit").textContent = "g";
     } else if (page == 2) {
         const inputItem = document.getElementById("inputItem");
         if (inputItem.value.trim() == "") {
@@ -189,6 +194,7 @@ function showPage(page) {
             document.getElementById("btnPrevForm").classList.remove("d-none");
             document.getElementById("btnSave").classList.remove("d-none");
             document.getElementById("modalTitle").textContent = inputItem.value + "の価格を" + (id == -1 ? "登録" : "編集");
+            document.getElementById("spanAmountUnit").textContent = document.getElementById("inputAmountUnit").value
         }
     }
 }
@@ -204,6 +210,7 @@ async function saveData() {
     const id = document.getElementById("inputId").value - 0;
     const item = inputItem.value;
     const category = document.getElementById("inputCategory").value;
+    const amountUnit = document.getElementById("inputAmountUnit").value;
     const date = document.getElementById("inputDate").value || todayString();
     const shop = document.getElementById("inputShop").value;
     const amount = inputAmount.value;
@@ -237,7 +244,7 @@ async function saveData() {
     }
 
     await DB.open();
-    await DB.items.put({ item, category });
+    await DB.items.put({ item, category, amountUnit });
     if (id == -1) {
         await DB.prices.put({ item, date, shop, amount, count, price, tax, memo });
     }
@@ -315,19 +322,24 @@ document.getElementById("accCategory").addEventListener("change", async (event) 
 });
 
 
-const formatWithCommaRightAlign = value => {
-  const formatted = value == null || value === "" ? "" : Number(value).toLocaleString();
-  return gridjs.html(`<div style="text-align: right;">${formatted}</div>`);
-};
-
 const myGrid = new gridjs.Grid({
     columns: [
         {id: "id", name: "ID", hidden: true},
         {id: "date", name: "日", width: "40px"},
         {id: "shop", name: "店", width: "40px"},
-        {id: "amount", name: "量", width: "20px", formatter: formatWithCommaRightAlign},
-        {id: "count", name: "個数", width: "20px", formatter: formatWithCommaRightAlign},
-        {id: "price", name: "￥", width: "20px", formatter: formatWithCommaRightAlign},
+        {id: "amount", name: "量", width: "20px", formatter: (value, row) => {
+            const formatted = value == null || value == "" ? "" : Number(value).toLocaleString();
+            const unit = myGrid.config.data[0].amountUnit;
+            return gridjs.html(`<div style="text-align: right;">${formatted} ${unit}</div>`);
+        }},
+        {id: "count", name: "個数", width: "20px", formatter: (value, row) => {
+            const formatted = value == null || value == "" ? "" : Number(value).toLocaleString();
+            return gridjs.html(`<div style="text-align: right;">${formatted}</div>`);
+        }},
+        {id: "price", name: "￥", width: "20px", formatter: (value, row) => {
+            const formatted = value == null || value == "" ? "" : Number(value).toLocaleString();
+            return gridjs.html(`<div style="text-align: right;">${formatted}</div>`);
+        }},
         {id: "ratio", name: "指標", width: "20px"},
         {id: "memo", name: "備考", width: "60px"}
     ],
@@ -346,6 +358,7 @@ async function showItemPage(item) {
     await DB.open();
 
     const prices = await DB.prices.where("item").equals(item).toArray();
+    const category = await DB.items.get(item);
 
     if (prices.length == 0) {
         document.getElementById("appbarTitle").innerText = "Price DB";
@@ -368,7 +381,8 @@ async function showItemPage(item) {
             count: data.count,
             price: data.priceWithTax,
             ratio: (data.unitPrice / minUnitPrice).toFixed(3),
-            memo: data.memo
+            memo: data.memo,
+            amountUnit: category.amountUnit
         }))
     }).forceRender();
 
