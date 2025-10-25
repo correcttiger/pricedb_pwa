@@ -327,16 +327,16 @@ const myGrid = new gridjs.Grid({
         {id: "id", name: "ID", hidden: true},
         {id: "date", name: "日", width: "40px"},
         {id: "shop", name: "店", width: "40px"},
-        {id: "amount", name: "量", width: "20px", formatter: (value, row) => {
+        {id: "amount", name: "量", width: "40px", formatter: (value, row) => {
             const formatted = value == null || value == "" ? "" : Number(value).toLocaleString();
             const unit = myGrid.config.data[0].amountUnit;
             return gridjs.html(`<div style="text-align: right;">${formatted} ${unit}</div>`);
         }},
-        {id: "count", name: "個数", width: "20px", formatter: (value, row) => {
+        {id: "count", name: "個数", width: "40px", formatter: (value, row) => {
             const formatted = value == null || value == "" ? "" : Number(value).toLocaleString();
             return gridjs.html(`<div style="text-align: right;">${formatted}</div>`);
         }},
-        {id: "price", name: "￥", width: "20px", formatter: (value, row) => {
+        {id: "price", name: "￥", width: "40px", formatter: (value, row) => {
             const formatted = value == null || value == "" ? "" : Number(value).toLocaleString();
             return gridjs.html(`<div style="text-align: right;">${formatted}</div>`);
         }},
