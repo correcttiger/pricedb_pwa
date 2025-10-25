@@ -27,10 +27,10 @@ const cacheName = "MyPdfSlideshowPWA-v" + serviceWorkerVersion
 const appShellFiles = [
     "./index.html",
     "./scripts/app.js",
-    "./scripts/bootstrap.bundle.min.js",
-    "./scripts/db.js",
-    "./scripts/dexie.min.js",
-    "./scripts/gridjs.umd.js",
+    // "./scripts/bootstrap.bundle.min.js",
+    // "./scripts/db.js",
+    // "./scripts/dexie.min.js",
+    // "./scripts/gridjs.umd.js",
     "./images/icon_128.png",
     "./styles/bootstrap.min.css",
     "./scripts/bootstrap.bundle.min.js"
