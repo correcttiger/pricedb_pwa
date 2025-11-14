@@ -22,7 +22,7 @@
 // });
 
 
-const serviceWorkerVersion = "0.1.0"
+const serviceWorkerVersion = "0.2.0"
 const cacheName = "MyPdfSlideshowPWA-v" + serviceWorkerVersion
 const appShellFiles = [
     "./index.html",
