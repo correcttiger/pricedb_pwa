@@ -268,7 +268,6 @@ async function deleteData() {
         if (data) {
             await DB.prices.delete(id);
             const otherData = await DB.prices.where("item").equals(data.item).toArray();
-            alert(data.item + "の残りは" + otherData.length);
             if (otherData.length == 0) {
                 await DB.items.delete(data.item);
             }
@@ -283,6 +282,19 @@ async function deleteData() {
 async function updateMenu() {
 
     await DB.open();
+
+    try { //okなら消す
+        const allItems = await DB.items.toArray();
+        for (const item of allItems) {
+            if (await DB.prices.where("item").equals(item.item).count() == 0) {
+                await DB.items.delete(data.item);
+                alert("古い名前を削除");
+            }
+        }
+    }
+    catch (e) {
+        alert("更新エラー: " + e);
+    }
 
     const accCategory = document.getElementById("accCategory");
     const categories = await DB.items.orderBy("category").uniqueKeys();
