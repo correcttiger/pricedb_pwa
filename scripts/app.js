@@ -268,6 +268,7 @@ async function deleteData() {
         if (data) {
             await DB.prices.delete(id);
             const otherData = await DB.prices.where("item").equals(data.item).toArray();
+            alert(data.item + "の残りは" + otherData.length);
             if (otherData.length == 0) {
                 await DB.items.delete(data.item);
             }
