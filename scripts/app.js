@@ -287,7 +287,7 @@ async function updateMenu() {
         const allItems = await DB.items.toArray();
         for (const item of allItems) {
             if (await DB.prices.where("item").equals(item.item).count() == 0) {
-                await DB.items.delete(data.item);
+                await DB.items.delete(item.item);
                 alert("古い名前を削除");
             }
         }
